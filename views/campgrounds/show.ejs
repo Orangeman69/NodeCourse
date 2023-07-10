@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= campground.title %></title>
+  </head>
+  <body>
+    <p>created by:<%= (campground?.author?.username || "Anonymous") %></p>
+    <h1><%= campground.title %></h1>
+    <h2><%= campground.location %></h2>
+    <img src="<%= campground.image %>" alt="" srcset="" height="500">
+    <br>
+    <p><%= campground.description %></p>
+    <p>$<%= campground.price %></p>
+    <% if(currentUser && campground?.author?.equals(currentUser._id)){ %>
+    <br>
+      <form action="/campgrounds/<%= campground._id %>?_method=DELETE", method="POST">
+        <button>DELETE</button>
+      </form>
+      <p><a href="/campgrounds/<%= campground._id %>/edit">Edit</p>
+    <% } %>
+    <p><a href="/campgrounds">Back to campgrounds</a></p>
+    <% if(currentUser){ %>
+    <br>
+    <br>
+      <form action="/campgrounds/<%= campground._id %>/reviews" method="POST">
+        <label for="rating">Rating:</label>
+        <input type="number" name="review[rating]" id="rating">
+        <br>
+        <label for="text">Review:</label>
+        <input type="text" name="review[text]" id="text">
+        <br>
+        <button>Send Review</button>
+      </form>
+      <br>
+      <% } %>
+      <h3>Reviews:</h3>
+      <% for(let review of campground.reviews){ %>
+        <h4><%= review.author.username %>: <%= review.rating %> <%= review.text %></h4>
+        <% if(currentUser && review.author.equals(currentUser)){ %>
+        <form  action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>/?_method=DELETE" method="POST">
+          <button>DELETE</button>
+        </form>
+        <% } %>
+      <% } %>
+      <br>
+      <br>
+  </body>
+</html>
